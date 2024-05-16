@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const userSchema = require('../schema/user');
+const authSchema = require('../schema/auth');
 
-const LoginModel = mongoose.model('Login', userSchema);
+const UserModel = mongoose.model('User', authSchema);
 
-module.exports = LoginModel;   
+module.exports = UserModel;

@@ -1,55 +1,70 @@
+// routes/auth.js
 const express = require('express');
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const auth = require('../middleware/auth');
+const User = require('../schema/User');
 
 const router = express.Router();
 
-// Sign-up Route
-router.post('/signup', [
-  body('email').isEmail(),
-  body('name').isLength({ min: 5 }),
-  body('password').isLength({ min: 8 })
-], async (req, res) => {
+// Signup route
+router.post('/signup', async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { email, name, password } = req.body;
-
+    const { username, email, password } = req.body;
     // Check if the user already exists
-    let existingUser = await User.findOne({ email });
-    if (existingUser) {
+    let user = await User.findOne({ email });
+    if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new user instance
-    const newUser = new User({ email, name, password: hashedPassword });
-
-    // Save the user to the database
-    await newUser.save();
-
-    // Generate a JWT token for the user
-    const token = newUser.generateAuthToken();
-
-    // Respond with the token
-    res.status(201).json({ token });
-  } catch (err) {
-    console.error(err.message);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    // Create new user
+    user = new User({
+      username,
+      email,
+      password: hashedPassword
+    });
+    await user.save();
+    res.json({ message: 'User created successfully' });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
 
-// Protected Route Example
-router.get('/protected', auth, (req, res) => {
-  res.json({ message: 'This is a protected route', user: req.user });
+// Login route
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid Credentials' });
+    }
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid Credentials' });
+    }
+    // Create and return JWT token
+    const payload = {
+      user: {
+        id: user.id
+      }
+    };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 3600 }, // Token expires in 1 hour
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
 });
 
 module.exports = router;
