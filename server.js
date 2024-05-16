@@ -19,6 +19,6 @@ mongoose.connect(dbCloudUrl || dbLocalUrl)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Failed to connect to MongoDB', error));
 
-app.use('/.netlify/functions/api/auth', authRouter);
+app.use('/.netlify/functions/api/auth', router);
 
 module.exports.handler = serverless(app);
