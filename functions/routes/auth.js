@@ -11,54 +11,36 @@ router.post('/signup', [
   body('name').isLength({ min: 5 }),
   body('password').isLength({ min: 8 })
 ], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email, name, password } = req.body;
-
   try {
-    let user = await User.findOne({ email });
-    if (user) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, name, password } = req.body;
+
+    // Check if the user already exists
+    let existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    user = new User({ email, name, password });
-    await user.save();
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const token = user.generateAuthToken();
+    // Create a new user instance
+    const newUser = new User({ email, name, password: hashedPassword });
+
+    // Save the user to the database
+    await newUser.save();
+
+    // Generate a JWT token for the user
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h' // Token expires in 1 hour
+    });
+
+    // Respond with the token
     res.status(201).json({ token });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Login Route
-router.post('/login', [
-  body('email').isEmail(),
-  body('password').isLength({ min: 8 })
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-
-    const token = user.generateAuthToken();
-    res.json({ token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
