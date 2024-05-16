@@ -7,7 +7,7 @@ const authRouter = require('./routes/auth');
 const app = express();
 
 const dbCloudUrl =
-'mongodb+srv://Mawi:Mawi21@cluster0.twni9tv.mongodb.net/Hatid?retryWrites=true&w=majority&appName=Cluster0'; // your mongoDB Cloud URL
+'mongodb+srv://Mawi:Mawi21@cluster0.twni9tv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // your mongoDB Cloud URL
 
 const dbLocalUrl = 'mongodb://localhost:27017/users';
 
@@ -19,6 +19,6 @@ mongoose.connect(dbCloudUrl || dbLocalUrl)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Failed to connect to MongoDB', error));
 
-app.use('/.netlify/functions/api/auth', authRouter);
+app.use('/.netlify/functions/api/auth', router);
 
 module.exports.handler = serverless(app);
