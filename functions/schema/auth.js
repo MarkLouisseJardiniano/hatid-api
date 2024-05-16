@@ -1,5 +1,22 @@
 const mongoose = require('mongoose');
 
+// Define the address schema first
+const addressSchema = new mongoose.Schema({
+    municipality: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    },
+    street: {
+      type: String,
+      required: true
+    }
+});
+
+// Define the user schema with reference to the address schema
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -12,6 +29,22 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
   password: {
+    type: String,
+    required: true
+  },
+  fullname: {
+    type: String,
+    required: true
+  },
+  address: {
+    type: addressSchema, // Reference to the address schema
+    required: true
+  },
+  number: {
+    type: Number,
+    required: true
+  },
+  birthday: {
     type: String,
     required: true
   }
