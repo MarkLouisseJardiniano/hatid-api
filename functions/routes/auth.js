@@ -1,7 +1,9 @@
 const express = require('express');
-const User = require('../models/user');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -35,15 +37,19 @@ router.post('/signup', [
     await newUser.save();
 
     // Generate a JWT token for the user
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h' // Token expires in 1 hour
-    });
+    const token = newUser.generateAuthToken();
 
     // Respond with the token
     res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
   }
+});
+
+// Protected Route Example
+router.get('/protected', auth, (req, res) => {
+  res.json({ message: 'This is a protected route', user: req.user });
 });
 
 module.exports = router;
