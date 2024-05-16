@@ -1,4 +1,3 @@
-// routes/auth.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -6,8 +5,7 @@ const User = require('../schema/auth');
 
 const router = express.Router();
 
-
-
+// Get all users
 router.get('/', async (req, res) => {
     try {
         const users = await User.find();
@@ -15,8 +13,7 @@ router.get('/', async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-})
-
+});
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -69,8 +66,12 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: 3600 }, // Token expires in 1 hour
       (err, token) => {
-        if (err) throw err;
-        res.json({ token });
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: 'Server Error' });
+        } else {
+          res.json({ token });
+        }
       }
     );
   } catch (error) {
