@@ -59,25 +59,25 @@ router.post('/signup', async (req, res) => {
   
 // Login route
 router.post('/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      // Check if user exists
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: 'Invalid Credentials' });
-      }
-      // Check password
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid Credentials' });
-      }
-      // Optionally, you can implement session-based authentication, OAuth, or another authentication mechanism here
-      res.json({ message: 'Login successful' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
-  });
-  
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token, role: user.role });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;
