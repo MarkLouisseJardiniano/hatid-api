@@ -37,7 +37,7 @@ router.post('/signup', async (req, res) => {
       email,
       password: hashedPassword,
       fullname,
-      address, // Assuming address is an object containing municipality, barangay, and street
+      address,
       number,
       birthday,
     });
@@ -45,10 +45,7 @@ router.post('/signup', async (req, res) => {
     await user.save();
     res.json({ message: 'User created successfully' });
   } catch (error) {
-    console.error('Error during signup:', error); // Enhanced error logging
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ message: error.message });
-    }
+    console.error('Error during signup:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
