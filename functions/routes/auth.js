@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password, fullname, address, number, birthday, role, licenseNumber, vehicleDetails } = req.body;
+    const { username, email, password, fullname, address, number, birthday } = req.body;
 
     // Check if the user already exists
     let user = await User.findOne({ email });
@@ -38,9 +38,6 @@ router.post('/signup', async (req, res) => {
       address, // Assuming address is an object containing municipality, barangay, and street
       number,
       birthday,
-      role,
-      licenseNumber: role === 'driver' ? licenseNumber : undefined,
-      vehicleDetails: role === 'driver' ? vehicleDetails : undefined,
     });
 
     await user.save();
@@ -55,29 +52,29 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-  
-  
 // Login route
 router.post('/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      // Check if user exists
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: 'Invalid Credentials' });
-      }
-      // Check password
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid Credentials' });
-      }
-      // Optionally, you can implement session-based authentication, OAuth, or another authentication mechanism here
-      res.json({ message: 'Login successful' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
+  try {
+    const { email, password } = req.body;
+    
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid Credentials' });
     }
-  });
-  
+    
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid Credentials' });
+    }
+
+    // Optionally, you can implement session-based authentication, OAuth, or another authentication mechanism here
+    res.json({ message: 'Login successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 
 module.exports = router;
