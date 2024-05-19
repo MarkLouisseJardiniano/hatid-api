@@ -14,6 +14,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const User = require('../schema/auth');
+const router = express.Router();
+
+// Get all users
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
@@ -43,11 +59,10 @@ router.post('/signup', async (req, res) => {
     await user.save();
     res.json({ message: 'User created successfully' });
   } catch (error) {
+    console.error('Error during signup:', error); // Enhanced error logging
     if (error.name === 'ValidationError') {
-      // Mongoose validation error
       return res.status(400).json({ message: error.message });
     }
-    console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
@@ -69,12 +84,13 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid Credentials' });
     }
 
-    // Optionally, you can implement session-based authentication, OAuth, or another authentication mechanism here
     res.json({ message: 'Login successful' });
   } catch (error) {
-    console.error(error);
+    console.error('Error during login:', error); // Enhanced error logging
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+module.exports = router;
 
 module.exports = router;
