@@ -1,22 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const User = require('../schema/auth');
+const User = require('../schema/auth'); 
 
-const router = express.Router();
 
-// Get all users
-router.get('/', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const User = require('../schema/auth');
 const router = express.Router();
 
 // Get all users
@@ -90,7 +76,5 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
-
-module.exports = router;
 
 module.exports = router;
