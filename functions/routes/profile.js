@@ -1,51 +1,21 @@
 const express = require('express');
-const path = require('path');
-const multer = require('multer');
-const User = require('../schema/auth');
-const auth = require('../middleware/auth');
-
 const router = express.Router();
+const User = require('../models/user');
 
-// Setup multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// Route to handle updating a post
+router.put('/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const { username, email, number } = req.body;
+        
+        // Find the post by ID and update its fields
+        const updatedUser = await User.findByIdAndUpdate(userId, { username, email, number }, { new: true });
 
-const upload = multer({ storage: storage });
-
-// Partially update user profile
-router.patch('/profile', auth, upload.single('profilePic'), async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+        res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server Error" });
     }
-
-    if (req.body.username) {
-      user.username = req.body.username;
-    }
-    if (req.body.email) {
-      user.email = req.body.email;
-    }
-    if (req.body.number) {
-      user.number = req.body.number;
-    }
-    if (req.file) {
-      user.profilePic = req.file.filename;
-    }
-
-    const updatedUser = await user.save();
-    res.json(updatedUser);
-  } catch (err) {
-    console.error('Error updating user profile:', err);
-    res.status(500).json({ message: 'Server Error' });
-  }
 });
 
 module.exports = router;
