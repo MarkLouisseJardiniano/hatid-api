@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Profile = require('../models/profile'); // Import your Profile model
 
-router.put('/profile', async (req, res) => {
+router.put('/:_id', async (req, res) => {
     try {
         const { username } = req.body;
 
