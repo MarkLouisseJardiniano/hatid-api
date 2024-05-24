@@ -6,8 +6,8 @@ router.put('/profile', async (req, res) => {
     try {
         const { username } = req.body;
 
-        // Update the profile in the database
-        const updatedProfile = await Profile.findOneAndUpdate({ username }, { username }, { new: true });
+        // Update the username in the database
+        const updatedProfile = await Profile.findOneAndUpdate({ _id: req.user._id }, { username }, { new: true });
 
         if (!updatedProfile) {
             return res.status(404).json({ message: 'Profile not found' });
