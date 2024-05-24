@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 
-router.put('/:userId', async (req, res) => {
+router.put('/updateUsername/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-        const { username, email, number } = req.body;
+        const { username } = req.body;
         
-        const updatedUser = await User.findByIdAndUpdate(userId, { username, email, number }, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, { username }, { new: true });
 
         res.json(updatedUser);
     } catch (err) {
