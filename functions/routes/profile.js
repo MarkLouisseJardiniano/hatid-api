@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Profile = require('../models/profile'); // Import your Profile model
 
-router.put('/:_id', async (req, res) => {
+router.put('/:userId', async (req, res) => { // Change route parameter name to match the one in React component
     try {
         const { username } = req.body;
 
         // Update the username in the database
-        const updatedProfile = await Profile.findOneAndUpdate({ _id: req.user._id }, { username }, { new: true });
+        const updatedProfile = await Profile.findOneAndUpdate({ _id: req.params.userId }, { username }, { new: true });
 
         if (!updatedProfile) {
             return res.status(404).json({ message: 'Profile not found' });

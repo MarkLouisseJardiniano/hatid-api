@@ -75,5 +75,31 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { username, email, fullname, address, number, birthday } = req.body;
+
+      // Find user by ID
+      let user = await User.findById(id);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Update user details
+      user.username = username;
+      user.email = email;
+      user.fullname = fullname;
+      user.address = address;
+      user.number = number;
+      user.birthday = birthday;
+
+      await user.save();
+      res.json({ message: 'User updated successfully' });
+  } catch (error) {
+      console.error('Error during user update:', error);
+      res.status(500).json({ message: 'Server Error' });
+  }
+});
 
 module.exports = router;
