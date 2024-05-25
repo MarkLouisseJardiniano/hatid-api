@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 // Your MongoDB Cloud URL
-const dbCloudUrl = 'your_mongodb_cloud_url';
+const dbCloudUrl = 'mongodb+srv://Mawi:Mawi21@cluster0.twni9tv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const dbLocalUrl = 'mongodb://localhost:27017/users';
 
 app.use(cors());
