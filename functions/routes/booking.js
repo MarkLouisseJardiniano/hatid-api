@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 
-router.post('/', async (req, res) => {
+router.post('/booking', async (req, res) => {
   const { pickup, destination } = req.body;
 
   try {
