@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./routes/auth');
 const bookingRouter = require('./routes/booking');
-const driverRouter = require('./routes/driver');
+const driverRouter = require('./routes/enrollment');
 
 const app = express();
 

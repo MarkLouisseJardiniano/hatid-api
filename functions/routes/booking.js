@@ -5,6 +5,7 @@ const Booking = require('../models/booking');
 router.post('/', async (req, res) => {
   try {
     const { pickup, destination } = req.body;
+    console.log('Request Body:', req.body);
 
     // Check if pickup and destination are provided
     if (!pickup || !destination) {
