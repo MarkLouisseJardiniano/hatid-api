@@ -16,10 +16,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const User = require('../schema/auth');
+
+const router = express.Router();
+
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password, fullname, address, number, birthday } = req.body;
+    const { username, email, password, fullname, municipality, barangay, street, number, birthday } = req.body;
 
     // Check if the user already exists
     let user = await User.findOne({ email });
@@ -37,19 +43,20 @@ router.post('/signup', async (req, res) => {
       email,
       password: hashedPassword,
       fullname,
-      address,
+      address: { municipality, barangay, street },
       number,
       birthday,
     });
 
     await user.save();
-    res.json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully', username: user.username });
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 });
 
+module.exports = router;
 
 // Login route
 router.post('/login', async (req, res) => {

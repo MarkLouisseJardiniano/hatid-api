@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the address schema first
 const addressSchema = new mongoose.Schema({
     municipality: {
       type: String,
