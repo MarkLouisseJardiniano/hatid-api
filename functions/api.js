@@ -4,19 +4,8 @@ const authRouter = require('./routes/auth');
 const bookingRouter = require('./routes/booking');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const http = require('http');
-const socketIo = require('socket.io');
 
 const app = express();
-const server = http.createServer(app);
-const io = require('socket.io')(server);
-
-
-// Middleware to inject io into requests
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
 
 // Your MongoDB Cloud URL
 const dbCloudUrl = 'mongodb+srv://Mawi:Mawi21@cluster0.twni9tv.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0';
@@ -27,18 +16,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect(dbCloudUrl || dbLocalUrl)
+  .connect(dbCloudUrl || dbLocalUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Failed to connect to MongoDB', error));
 
 app.use('/.netlify/functions/api/auth', authRouter);
 app.use('/.netlify/functions/api/booking', bookingRouter);
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error' });
 });
 
 module.exports.handler = serverless(app);
