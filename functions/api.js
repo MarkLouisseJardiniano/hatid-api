@@ -11,7 +11,15 @@ const app = express();
 const dbCloudUrl = 'mongodb+srv://Mawi:Mawi21@cluster0.twni9tv.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0';
 const dbLocalUrl = 'mongodb://localhost:27017/users';
 
-app.use(cors());
+// Define CORS options
+const corsOptions = {
+  origin: '*', // Allow requests from any origin for demonstration purposes. You might want to restrict this in production.
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
