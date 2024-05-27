@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(booking);
   } catch (error) {
     console.error('Failed to create booking:', error);
+
     // Check if the error is due to validation or database issue
     if (error.name === 'ValidationError') {
       res.status(400).json({ message: 'Invalid data for booking', error: error.message });
