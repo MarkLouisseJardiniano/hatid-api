@@ -2,6 +2,7 @@ const express = require('express');
 const serverless = require('serverless-http');
 const authRouter = require('./routes/auth');
 const bookingRouter = require('./routes/booking');
+const driverRouter = require('./routes/enrollment');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -13,7 +14,7 @@ const dbLocalUrl = 'mongodb://localhost:27017/users';
 
 // Define CORS options
 const corsOptions = {
-  origin: '*', // Allow requests from any origin for demonstration purposes. You might want to restrict this in production.
+  origin: '*', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
@@ -30,6 +31,7 @@ mongoose
 
 app.use('/.netlify/functions/api/auth', authRouter);
 app.use('/.netlify/functions/api/booking', bookingRouter);
+app.use('/.netlify/functions/api/driver', driverRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
