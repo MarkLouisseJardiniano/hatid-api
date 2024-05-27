@@ -1,27 +1,30 @@
-// routes/bookings.js
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 
 router.post('/', async (req, res) => {
-  const { pickup, destination } = req.body;
-
-  // Validation: Check if pickup and destination are provided
-  if (!pickup || !destination) {
-    return res.status(400).json({ message: 'Both pickup and destination are required' });
-  }
-
   try {
+    const { pickup, destination } = req.body;
+
+    // Check if pickup and destination are provided
+    if (!pickup || !destination) {
+      return res.status(400).json({ message: 'Both pickup and destination are required' });
+    }
+
+    // Create a new booking
     const booking = new Booking({ pickup, destination });
     await booking.save();
 
-    // Notify all connected clients about the new booking
-    req.io.emit('new booking', booking);
-
+    // Send success response
     res.status(201).json(booking);
   } catch (error) {
     console.error('Failed to create booking:', error);
-    res.status(500).json({ message: 'Failed to create booking' });
+    // Check if the error is due to validation or database issue
+    if (error.name === 'ValidationError') {
+      res.status(400).json({ message: 'Invalid data for booking', error: error.message });
+    } else {
+      res.status(500).json({ message: 'Failed to create booking', error: error.message });
+    }
   }
 });
 

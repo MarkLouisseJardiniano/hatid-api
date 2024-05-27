@@ -1,10 +1,10 @@
 const express = require('express');
 const serverless = require('serverless-http');
-const authRouter = require('./routes/auth');
-const bookingRouter = require('./routes/booking');
-const driverRouter = require('./routes/enrollment');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const authRouter = require('./routes/auth');
+const bookingRouter = require('./routes/booking');
+const driverRouter = require('./routes/driver');
 
 const app = express();
 
@@ -29,6 +29,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Failed to connect to MongoDB', error));
 
+// Define routes
 app.use('/.netlify/functions/api/auth', authRouter);
 app.use('/.netlify/functions/api/booking', bookingRouter);
 app.use('/.netlify/functions/api/driver', driverRouter);
