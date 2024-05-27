@@ -16,12 +16,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const User = require('../schema/auth');
-
-const router = express.Router();
-
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
@@ -55,8 +49,6 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
-
-module.exports = router;
 
 // Login route
 router.post('/login', async (req, res) => {
