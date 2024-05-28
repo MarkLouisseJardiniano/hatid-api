@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRouter = require('./routes/auth');
 const bookingRouter = require('./routes/booking');
-const driverRouter = require('./routes/enrollment');
 
 const app = express();
 
@@ -32,7 +31,6 @@ mongoose
 // Define routes
 app.use('/.netlify/functions/api/auth', authRouter);
 app.use('/.netlify/functions/api/booking', bookingRouter);
-app.use('/.netlify/functions/api/driver', driverRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
