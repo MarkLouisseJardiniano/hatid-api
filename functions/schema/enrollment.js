@@ -16,7 +16,7 @@ const addressSchema = new mongoose.Schema({
 });
 
 const vehicleSchema = new mongoose.Schema({
-  make: {
+  type: {
     type: String,
     required: true
   },

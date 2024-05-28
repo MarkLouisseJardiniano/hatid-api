@@ -2,7 +2,6 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../schema/auth'); 
 
-
 const router = express.Router();
 
 // Get all users
