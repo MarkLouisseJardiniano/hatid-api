@@ -30,7 +30,7 @@ mongoose
 
 // Define routes
 app.use('/.netlify/functions/api/auth', authRouter);
-app.use('/.netlify/functions/api/booking', bookingRouter);
+app.use('/.netlify/functions/api/', bookingRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
