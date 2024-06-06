@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
 });
 
 
-router.get('/', async (req, res) => {
+router.get('/booking', async (req, res) => {
   try {
     const bookings = await Booking.find();
     res.status(200).json(bookings);
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET: Retrieve a booking by ID
-router.get('/:id', async (req, res) => {
+router.get('/booking/:id', async (req, res) => {
   try {
     const bookingId = req.params.id;
     const booking = await Booking.findById(bookingId);
