@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 
-router.post('/', async (req, res) => {
+router.post('/booking', async (req, res) => {
   try {
     const { pickup, destination } = req.body;
     console.log('Request Body:', req.body);
 
-    // Check if pickup and destination are provided
     if (!pickup || !destination) {
       return res.status(400).json({ message: 'Both pickup and destination are required' });
     }
