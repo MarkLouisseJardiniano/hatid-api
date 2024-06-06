@@ -30,4 +30,32 @@ router.post('/', async (req, res) => {
   }
 });
 
+
+router.get('/', async (req, res) => {
+  try {
+    const bookings = await Booking.find();
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error('Failed to fetch bookings:', error);
+    res.status(500).json({ message: 'Failed to fetch bookings', error: error.message });
+  }
+});
+
+// GET: Retrieve a booking by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    res.status(200).json(booking);
+  } catch (error) {
+    console.error('Failed to fetch booking:', error);
+    res.status(500).json({ message: 'Failed to fetch booking', error: error.message });
+  }
+});
+
 module.exports = router;
